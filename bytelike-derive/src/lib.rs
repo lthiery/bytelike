@@ -1,6 +1,6 @@
 use proc_macro::TokenStream;
 use quote::quote;
-use syn::{parse_macro_input, DeriveInput};
+use syn::{parse_macro_input, DeriveInput, Data, Fields};
 
 #[proc_macro_derive(ByteLike)]
 pub fn bytelike(input: TokenStream) -> TokenStream {
@@ -10,7 +10,7 @@ pub fn bytelike(input: TokenStream) -> TokenStream {
     let parse = bytelike_parse(input_str.parse().unwrap());
     let arithmetic = bytelike_arithmetic(input_str.parse().unwrap());
     let fromstr = bytelike_fromstr(input_str.parse().unwrap());
-    
+
     let mut combined = format!(
         "{}{}{}{}{}",
         constructor, display, parse, arithmetic, fromstr
@@ -26,62 +26,73 @@ pub fn bytelike(input: TokenStream) -> TokenStream {
 pub fn bytelike_constructor(input: TokenStream) -> TokenStream {
     let input = parse_macro_input!(input as DeriveInput);
     let name = &input.ident;
+    
+    let inner_type = match &input.data {
+        Data::Struct(data) => match &data.fields {
+            Fields::Unnamed(fields) if fields.unnamed.len() == 1 => {
+                let field = fields.unnamed.first().unwrap();
+                &field.ty
+            }
+            _ => panic!("ByteLike can only be derived for tuple structs with exactly one field"),
+        },
+        _ => panic!("ByteLike can only be derived for tuple structs"),
+    };
 
     let expanded = quote! {
         impl #name {
             #[inline(always)]
-            pub const fn b(size: u64) -> Self {
+            pub const fn b(size: #inner_type) -> Self {
                 Self(size)
             }
 
             #[inline(always)]
-            pub const fn kb(size: u64) -> Self {
-                Self(size * bytelike::KB)
+            pub const fn kb(size: #inner_type) -> Self {
+                Self(size * (bytelike::KB as #inner_type))
             }
 
             #[inline(always)]
-            pub const fn kib(size: u64) -> Self {
-                Self(size * bytelike::KIB)
+            pub const fn kib(size: #inner_type) -> Self {
+                Self(size * (bytelike::KIB as #inner_type))
             }
 
             #[inline(always)]
-            pub const fn mb(size: u64) -> Self {
-                Self(size * bytelike::MB)
+            pub const fn mb(size: #inner_type) -> Self {
+                Self(size * (bytelike::MB as #inner_type))
             }
 
             #[inline(always)]
-            pub const fn mib(size: u64) -> Self {
-                Self(size * bytelike::MIB)
+            pub const fn mib(size: #inner_type) -> Self {
+                Self(size * (bytelike::MIB as #inner_type))
             }
 
             #[inline(always)]
-            pub const fn gb(size: u64) -> Self {
-                Self(size * bytelike::GB)
+            pub const fn gb(size: #inner_type) -> Self {
+                Self(size * (bytelike::GB as #inner_type))
             }
 
             #[inline(always)]
-            pub const fn gib(size: u64) -> Self {
-                Self(size * bytelike::GIB)
+            pub const fn gib(size: #inner_type) -> Self {
+                Self(size * (bytelike::GIB as #inner_type))
             }
 
             #[inline(always)]
-            pub const fn tb(size: u64) -> Self {
-                Self(size * bytelike::TB)
+            pub const fn tb(size: #inner_type) -> Self {
+                Self(size * (bytelike::TB as #inner_type))
             }
 
             #[inline(always)]
-            pub const fn tib(size: u64) -> Self {
-                Self(size * bytelike::TIB)
+            pub const fn tib(size: #inner_type) -> Self {
+                Self(size * (bytelike::TIB as #inner_type))
             }
 
             #[inline(always)]
-            pub const fn pb(size: u64) -> Self {
-                Self(size * bytelike::PB)
+            pub const fn pb(size: #inner_type) -> Self {
+                Self(size * (bytelike::PB as #inner_type))
             }
 
             #[inline(always)]
-            pub const fn pib(size: u64) -> Self {
-                Self(size * bytelike::PIB)
+            pub const fn pib(size: #inner_type) -> Self {
+                Self(size * (bytelike::PIB as #inner_type))
             }
         }
     };
@@ -93,6 +104,17 @@ pub fn bytelike_constructor(input: TokenStream) -> TokenStream {
 pub fn bytelike_arithmetic(input: TokenStream) -> TokenStream {
     let input = parse_macro_input!(input as DeriveInput);
     let name = &input.ident;
+    
+    let inner_type = match &input.data {
+        Data::Struct(data) => match &data.fields {
+            Fields::Unnamed(fields) if fields.unnamed.len() == 1 => {
+                let field = fields.unnamed.first().unwrap();
+                &field.ty
+            }
+            _ => panic!("ByteLike can only be derived for tuple structs with exactly one field"),
+        },
+        _ => panic!("ByteLike can only be derived for tuple structs"),
+    };
 
     let expanded = quote! {
         impl std::ops::Add<#name> for #name {
@@ -113,18 +135,18 @@ pub fn bytelike_arithmetic(input: TokenStream) -> TokenStream {
 
         impl<T> std::ops::Add<T> for #name
         where
-            T: Into<u64>,
+            T: Into<#inner_type>,
         {
             type Output = #name;
             #[inline(always)]
             fn add(self, rhs: T) -> #name {
-                #name(self.0 + (rhs.into()))
+                #name(self.0 + rhs.into())
             }
         }
 
         impl<T> std::ops::AddAssign<T> for #name
         where
-            T: Into<u64>,
+            T: Into<#inner_type>,
         {
             #[inline(always)]
             fn add_assign(&mut self, rhs: T) {
@@ -134,7 +156,7 @@ pub fn bytelike_arithmetic(input: TokenStream) -> TokenStream {
 
         impl<T> std::ops::Mul<T> for #name
         where
-            T: Into<u64>,
+            T: Into<#inner_type>,
         {
             type Output = #name;
             #[inline(always)]
@@ -145,7 +167,7 @@ pub fn bytelike_arithmetic(input: TokenStream) -> TokenStream {
 
         impl<T> std::ops::MulAssign<T> for #name
         where
-            T: Into<u64>,
+            T: Into<#inner_type>,
         {
             #[inline(always)]
             fn mul_assign(&mut self, rhs: T) {
@@ -154,7 +176,7 @@ pub fn bytelike_arithmetic(input: TokenStream) -> TokenStream {
         }
 
         // Commutative operations for primitive types
-        impl std::ops::Add<#name> for u64 {
+        impl std::ops::Add<#name> for #inner_type {
             type Output = #name;
             #[inline(always)]
             fn add(self, rhs: #name) -> #name {
@@ -166,7 +188,7 @@ pub fn bytelike_arithmetic(input: TokenStream) -> TokenStream {
             type Output = #name;
             #[inline(always)]
             fn add(self, rhs: #name) -> #name {
-                #name(rhs.0 + (self as u64))
+                #name(rhs.0 + (self as #inner_type))
             }
         }
 
@@ -174,7 +196,7 @@ pub fn bytelike_arithmetic(input: TokenStream) -> TokenStream {
             type Output = #name;
             #[inline(always)]
             fn add(self, rhs: #name) -> #name {
-                #name(rhs.0 + (self as u64))
+                #name(rhs.0 + (self as #inner_type))
             }
         }
 
@@ -182,11 +204,11 @@ pub fn bytelike_arithmetic(input: TokenStream) -> TokenStream {
             type Output = #name;
             #[inline(always)]
             fn add(self, rhs: #name) -> #name {
-                #name(rhs.0 + (self as u64))
+                #name(rhs.0 + (self as #inner_type))
             }
         }
 
-        impl std::ops::Mul<#name> for u64 {
+        impl std::ops::Mul<#name> for #inner_type {
             type Output = #name;
             #[inline(always)]
             fn mul(self, rhs: #name) -> #name {
@@ -198,7 +220,7 @@ pub fn bytelike_arithmetic(input: TokenStream) -> TokenStream {
             type Output = #name;
             #[inline(always)]
             fn mul(self, rhs: #name) -> #name {
-                #name(rhs.0 * (self as u64))
+                #name(rhs.0 * (self as #inner_type))
             }
         }
 
@@ -206,7 +228,7 @@ pub fn bytelike_arithmetic(input: TokenStream) -> TokenStream {
             type Output = #name;
             #[inline(always)]
             fn mul(self, rhs: #name) -> #name {
-                #name(rhs.0 * (self as u64))
+                #name(rhs.0 * (self as #inner_type))
             }
         }
 
@@ -214,7 +236,7 @@ pub fn bytelike_arithmetic(input: TokenStream) -> TokenStream {
             type Output = #name;
             #[inline(always)]
             fn mul(self, rhs: #name) -> #name {
-                #name(rhs.0 * (self as u64))
+                #name(rhs.0 * (self as #inner_type))
             }
         }
     };
@@ -230,7 +252,7 @@ pub fn bytelike_display(input: TokenStream) -> TokenStream {
     let expanded = quote! {
         impl std::fmt::Display for #name {
             fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-                f.pad(&bytelike::to_string(self.0, true))
+                f.pad(&bytelike::to_string(self.0 as u64, true))
             }
         }
 
@@ -248,13 +270,24 @@ pub fn bytelike_display(input: TokenStream) -> TokenStream {
 pub fn bytelike_fromstr(input: TokenStream) -> TokenStream {
     let input = parse_macro_input!(input as DeriveInput);
     let name = &input.ident;
+    
+    let inner_type = match &input.data {
+        Data::Struct(data) => match &data.fields {
+            Fields::Unnamed(fields) if fields.unnamed.len() == 1 => {
+                let field = fields.unnamed.first().unwrap();
+                &field.ty
+            }
+            _ => panic!("ByteLike can only be derived for tuple structs with exactly one field"),
+        },
+        _ => panic!("ByteLike can only be derived for tuple structs"),
+    };
 
     let expanded = quote! {
         impl std::str::FromStr for #name {
             type Err = String;
 
             fn from_str(value: &str) -> Result<Self, Self::Err> {
-                if let Ok(v) = value.parse::<u64>() {
+                if let Ok(v) = value.parse::<#inner_type>() {
                     return Ok(Self(v));
                 }
                 let number = bytelike::take_while(value, |c| c.is_ascii_digit() || c == '.');
@@ -264,7 +297,7 @@ pub fn bytelike_fromstr(input: TokenStream) -> TokenStream {
                             c.is_whitespace() || c.is_ascii_digit() || c == '.'
                         });
                         match suffix.parse::<bytelike::Unit>() {
-                            Ok(u) => Ok(Self((v * u64::from(u) as f64) as u64)),
+                            Ok(u) => Ok(Self((v * u64::from(u) as f64) as #inner_type)),
                             Err(error) => Err(format!(
                                 "couldn't parse {:?} into a known SI unit, {}",
                                 suffix, error
