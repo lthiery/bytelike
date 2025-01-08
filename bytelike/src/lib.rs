@@ -1,6 +1,9 @@
 //! Common types and functions for byte size handling
 use std::str::FromStr;
 
+#[cfg(feature = "derive")]
+pub use bytelike_derive::*;
+
 /// byte size for 1 byte
 pub const B: u64 = 1;
 /// bytes size for 1 kilobyte

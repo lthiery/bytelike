@@ -8,3 +8,9 @@ keywords = ["byte", "byte-size", "utility", "human-readable", "format"]
 license = "Apache-2.0"
 
 [dependencies]
+bytelike-derive = { path = "../bytelike-derive", optional = true }
+serde = { version = "1.0", features = ["derive"], optional = true }
+
+[features]
+derive = ["bytelike-derive"]
+serde = ["dep:serde"]

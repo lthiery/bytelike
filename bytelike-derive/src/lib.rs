@@ -1,7 +1,7 @@
 use proc_macro::TokenStream;
+use proc_macro2::Span;
 use quote::quote;
 use syn::{parse_macro_input, DeriveInput};
-use proc_macro2::Span;
 
 #[proc_macro_derive(ByteLike)]
 pub fn bytelike(input: TokenStream) -> TokenStream {
@@ -118,35 +118,35 @@ pub fn bytelike_ops(input: TokenStream) -> TokenStream {
                 self.0 += rhs.into();
             }
         }
-        
+
         impl std::ops::Sub<#name> for #name {
             type Output = #name;
-        
+
             #[inline(always)]
             fn sub(self, rhs: #name) -> #name {
                 #name(self.0 - rhs.0)
             }
         }
-        
+
         impl std::ops::SubAssign<#name> for #name {
             #[inline(always)]
             fn sub_assign(&mut self, rhs: #name) {
                 self.0 -= rhs.0
             }
         }
-        
+
         impl<T> std::ops::Sub<T> for #name
         where
             T: Into<u64>,
         {
             type Output = #name;
-        
+
             #[inline(always)]
             fn sub(self, rhs: T) -> #name {
                 #name(self.0 - (rhs.into()))
             }
         }
-        
+
         impl<T> std::ops::SubAssign<T> for #name
         where
             T: Into<u64>,
@@ -156,7 +156,7 @@ pub fn bytelike_ops(input: TokenStream) -> TokenStream {
                 self.0 -= rhs.into();
             }
         }
-        
+
         impl<T> std::ops::Mul<T> for #name
         where
             T: Into<u64>,
@@ -252,7 +252,7 @@ pub fn bytelike_ops(input: TokenStream) -> TokenStream {
             pub fn range_start<I: Into<Self>>(start: I) -> bytelike::ByteLikeRange<Self> {
                 bytelike::ByteLikeRange::new(Some(start), None)
             }
-            
+
             /// Provides `ByteLikeRange` with explicit lower bound. Upper bound is set to `u64::MAX`.
             pub fn range_stop<I: Into<Self>>(stop: I) -> bytelike::ByteLikeRange<Self> {
                 bytelike::ByteLikeRange::new(None, Some(stop.into()))

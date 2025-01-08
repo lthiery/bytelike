@@ -1,8 +1,6 @@
 #![warn(missing_docs)]
 #![doc = include_str!("../README.md")]
-
 pub use bytelike::*;
-use bytelike_derive::*;
 
 /// A new-type for byte sizes, providing convenient constructors, arithmetic operations, conversions,
 /// and display.
@@ -47,11 +45,11 @@ mod tests {
         assert_eq!((x + B as u8).as_u64(), 1_000_001);
 
         assert_eq!((x - MB as u64).as_u64(), 0);
-        
+
         assert_eq!((x - MB as u32).as_u64(), 0);
-        
+
         assert_eq!((x - KB as u32).as_u64(), 999_000);
-        
+
         assert_eq!((x - B as u32).as_u64(), 999_999);
 
         x += MB as u64;
