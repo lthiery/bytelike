@@ -1,5 +1,14 @@
+#![no_std]
+#![cfg_attr(not(feature = "std"), no_std)]
+
 //! Common types and functions for byte size handling
-use std::str::FromStr;
+extern crate alloc;
+
+#[cfg(feature = "std")]
+extern crate std;
+
+use alloc::{format, string::String};
+use core::str::FromStr;
 
 #[cfg(feature = "derive")]
 pub use bytelike_derive::*;
@@ -64,12 +73,13 @@ pub fn to_string(bytes: u64, si_prefix: bool) -> String {
 #[derive(Debug)]
 pub struct ParseError(pub String);
 
-impl std::fmt::Display for ParseError {
-    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+impl core::fmt::Display for ParseError {
+    fn fmt(&self, f: &mut core::fmt::Formatter<'_>) -> core::fmt::Result {
         write!(f, "{}", self.0)
     }
 }
 
+#[cfg(feature = "std")]
 impl std::error::Error for ParseError {}
 
 pub fn take_while<P>(s: &str, mut predicate: P) -> &str
@@ -169,12 +179,12 @@ impl<T: From<u64>> ByteLikeRange<T> {
     }
 }
 
-impl<T: From<u64>> std::ops::RangeBounds<T> for ByteLikeRange<T> {
-    fn start_bound(&self) -> std::ops::Bound<&T> {
-        std::ops::Bound::Included(&self.start)
+impl<T: From<u64>> core::ops::RangeBounds<T> for ByteLikeRange<T> {
+    fn start_bound(&self) -> core::ops::Bound<&T> {
+        core::ops::Bound::Included(&self.start)
     }
 
-    fn end_bound(&self) -> std::ops::Bound<&T> {
-        std::ops::Bound::Included(&self.stop)
+    fn end_bound(&self) -> core::ops::Bound<&T> {
+        core::ops::Bound::Included(&self.stop)
     }
 }
