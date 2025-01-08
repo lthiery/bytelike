@@ -354,41 +354,41 @@ pub fn bytelike_serde(input: TokenStream) -> TokenStream {
     let name = &input.ident;
 
     let expanded = quote! {
-        impl<'de> serde::Deserialize<'de> for #name {
+        impl<'de> bytelike::serde::Deserialize<'de> for #name {
             fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
             where
-                D: serde::Deserializer<'de>,
+                D: bytelike::serde::Deserializer<'de>,
             {
                 struct ByteSizeVistor;
 
-                impl<'de> serde::de::Visitor<'de> for ByteSizeVistor {
+                impl<'de> bytelike::serde::de::Visitor<'de> for ByteSizeVistor {
                     type Value = #name;
 
                     fn expecting(&self, formatter: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
                         formatter.write_str("an integer or string")
                     }
 
-                    fn visit_i64<E: serde::de::Error>(self, value: i64) -> Result<Self::Value, E> {
+                    fn visit_i64<E: bytelike::serde::de::Error>(self, value: i64) -> Result<Self::Value, E> {
                         if let Ok(val) = u64::try_from(value) {
                             Ok(#name(val))
                         } else {
                             Err(E::invalid_value(
-                                serde::de::Unexpected::Signed(value),
+                                bytelike::serde::de::Unexpected::Signed(value),
                                 &"integer overflow",
                             ))
                         }
                     }
 
-                    fn visit_u64<E: serde::de::Error>(self, value: u64) -> Result<Self::Value, E> {
+                    fn visit_u64<E: bytelike::serde::de::Error>(self, value: u64) -> Result<Self::Value, E> {
                         Ok(#name(value))
                     }
 
-                    fn visit_str<E: serde::de::Error>(self, value: &str) -> Result<Self::Value, E> {
+                    fn visit_str<E: bytelike::serde::de::Error>(self, value: &str) -> Result<Self::Value, E> {
                         if let Ok(val) = value.parse() {
                             Ok(val)
                         } else {
                             Err(E::invalid_value(
-                                serde::de::Unexpected::Str(value),
+                                bytelike::serde::de::Unexpected::Str(value),
                                 &"parsable string",
                             ))
                         }
@@ -402,11 +402,12 @@ pub fn bytelike_serde(input: TokenStream) -> TokenStream {
                 }
             }
         }
-        impl serde::Serialize for #name {
+        impl bytelike::serde::Serialize for #name {
             fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
             where
-                S: serde::Serializer,
+                S: bytelike::serde::Serializer,
             {
+                use alloc::string::ToString;
                 if serializer.is_human_readable() {
                     <str>::serialize(self.to_string().as_str(), serializer)
                 } else {

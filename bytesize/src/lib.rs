@@ -104,6 +104,7 @@ mod tests {
     }
 
     fn assert_to_string(expected: &str, b: ByteSize, si: bool) {
+        use alloc::string::ToString;
         assert_eq!(expected.to_string(), b.to_string_as(si));
     }
 
@@ -151,7 +152,7 @@ mod tests {
     #[cfg(feature = "serde")]
     #[test]
     fn test_serde() {
-        use serde_derive::{Deserialize, Serialize};
+        use serde::{Deserialize, Serialize};
         use serde_json;
         use toml;
 

@@ -7,6 +7,9 @@ extern crate alloc;
 #[cfg(feature = "std")]
 extern crate std;
 
+#[cfg(feature ="serde")]
+pub use serde;
+
 use alloc::{format, string::String};
 use core::str::FromStr;
 
