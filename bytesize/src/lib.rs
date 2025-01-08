@@ -2,9 +2,9 @@
 #![warn(missing_docs)]
 #![doc = include_str!("../README.md")]
 
+extern crate alloc;
 #[cfg(feature = "std")]
 extern crate std;
-extern crate alloc;
 
 pub use bytelike::*;
 
