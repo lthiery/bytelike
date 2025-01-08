@@ -269,14 +269,14 @@ pub fn bytelike_display(input: TokenStream) -> TokenStream {
     let name = &input.ident;
 
     let expanded = quote! {
-        impl std::fmt::Display for #name {
-            fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        impl core::fmt::Display for #name {
+            fn fmt(&self, f: &mut core::fmt::Formatter) -> core::fmt::Result {
                 f.pad(&bytelike::to_string(self.0, true))
             }
         }
 
-        impl std::fmt::Debug for #name {
-            fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        impl core::fmt::Debug for #name {
+            fn fmt(&self, f: &mut core::fmt::Formatter) -> core::fmt::Result {
                 write!(f, "{}", self)
             }
         }
@@ -292,7 +292,7 @@ pub fn bytelike_fromstr(input: TokenStream) -> TokenStream {
 
     let expanded = quote! {
         impl std::str::FromStr for #name {
-            type Err = String;
+            type Err = alloc::string::String;
 
             fn from_str(value: &str) -> Result<Self, Self::Err> {
                 if let Ok(v) = value.parse::<u64>() {
@@ -306,13 +306,14 @@ pub fn bytelike_fromstr(input: TokenStream) -> TokenStream {
                         });
                         match suffix.parse::<bytelike::Unit>() {
                             Ok(u) => Ok(Self((v * u64::from(u) as f64) as u64)),
-                            Err(error) => Err(format!(
+                            Err(error) => Err(alloc::format!(
                                 "couldn't parse {:?} into a known SI unit, {}",
                                 suffix, error
                             )),
                         }
                     }
-                    Err(error) => Err(format!(
+                    Err(error) => Err(alloc::
+                        format!(
                         "couldn't parse {:?} into a ByteSize, {}",
                         value, error
                     )),
@@ -333,7 +334,7 @@ pub fn bytelike_parse(input: TokenStream) -> TokenStream {
         impl #name {
             /// Returns the size as a string with an optional SI unit.
             #[inline(always)]
-            pub fn to_string_as(&self, si_unit: bool) -> String {
+            pub fn to_string_as(&self, si_unit: bool) -> alloc::string::String {
                 bytelike::to_string(self.0, si_unit)
             }
 
