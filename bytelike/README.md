@@ -21,6 +21,12 @@ Or if don't want serde:
 bytelike = { version = "0.1" }
 ```
 
+Note, you can also disable std:
+```toml
+[dependencies]
+bytelike = { version = "0.1", no-default-features = true }
+```
+
 Next, define your new type and derive `ByteLike` for it:
 
 ```rust
