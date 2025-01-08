@@ -14,6 +14,12 @@ pub use bytelike::*;
 #[cfg_attr(feature = "arbitrary", derive(arbitrary::Arbitrary))]
 pub struct ByteSize(pub u64);
 
+/// A new-type for byte sizes, providing convenient constructors, arithmetic operations, conversions,
+/// and display. The inner type is u32.
+#[derive(Copy, Clone, PartialEq, PartialOrd, Eq, Ord, Hash, Default, ByteLike)]
+#[cfg_attr(feature = "arbitrary", derive(arbitrary::Arbitrary))]
+pub struct ByteSizeU32(pub u32);
+
 #[cfg(test)]
 mod tests {
     use super::*;

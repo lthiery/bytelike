@@ -165,26 +165,40 @@ impl FromStr for Unit {
     }
 }
 
-pub struct ByteLikeRange<T: From<u64>> {
-    start: T,
-    stop: T,
+pub struct ByteLikeRange<T, B> {
+    start: Option<B>,
+    stop: Option<B>,
+    _phantom: std::marker::PhantomData<T>,
 }
 
-impl<T: From<u64>> ByteLikeRange<T> {
-    pub fn new<I: Into<T>>(start: Option<I>, stop: Option<I>) -> Self {
-        ByteLikeRange {
-            start: start.map(Into::into).unwrap_or(0.into()),
-            stop: stop.map(Into::into).unwrap_or(u64::MAX.into()),
+impl<T, B> ByteLikeRange<T, B> 
+where 
+    B: AsRef<T>
+{
+    pub fn new<I: Into<B>>(start: Option<I>, stop: Option<I>) -> Self {
+        Self {
+            start: start.map(Into::into),
+            stop: stop.map(Into::into),
+            _phantom: std::marker::PhantomData,
         }
     }
 }
 
-impl<T: From<u64>> core::ops::RangeBounds<T> for ByteLikeRange<T> {
+impl<T, B> core::ops::RangeBounds<T> for ByteLikeRange<T, B>
+where
+    B: AsRef<T>
+{
     fn start_bound(&self) -> core::ops::Bound<&T> {
-        core::ops::Bound::Included(&self.start)
+        match &self.start {
+            Some(start) => core::ops::Bound::Included(start.as_ref()),
+            None => core::ops::Bound::Unbounded,
+        }
     }
 
     fn end_bound(&self) -> core::ops::Bound<&T> {
-        core::ops::Bound::Included(&self.stop)
+        match &self.stop {
+            Some(stop) => core::ops::Bound::Included(stop.as_ref()),
+            None => core::ops::Bound::Unbounded,
+        }
     }
 }
