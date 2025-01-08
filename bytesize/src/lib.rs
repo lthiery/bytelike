@@ -1,5 +1,11 @@
+#![no_std]
 #![warn(missing_docs)]
 #![doc = include_str!("../README.md")]
+
+#[cfg(feature = "std")]
+extern crate std;
+extern crate alloc;
+
 pub use bytelike::*;
 
 /// A new-type for byte sizes, providing convenient constructors, arithmetic operations, conversions,
@@ -11,6 +17,8 @@ pub struct ByteSize(pub u64);
 #[cfg(test)]
 mod tests {
     use super::*;
+    #[cfg(feature = "std")]
+    use std::format;
 
     #[test]
     fn test_arithmetic_op() {

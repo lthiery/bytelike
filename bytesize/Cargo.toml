@@ -19,6 +19,7 @@ serde_json = { version = "1.0", features = ["std"] }
 toml = "0.8"
 
 [features]
-default = []
+default = ["std"]
+std = ["bytelike/std"]
 arbitrary = ["dep:arbitrary"]
 serde = ["bytelike/serde"]
