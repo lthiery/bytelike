@@ -20,6 +20,8 @@ Features:
 ### Human readable representations (SI unit and Binary unit)
 
 ```rust
+use bytesize::ByteSize;
+
 fn assert_display(expected: &str, b: ByteSize) {
     assert_eq!(expected, format!("{}", b));
 }
