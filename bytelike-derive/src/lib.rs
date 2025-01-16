@@ -347,7 +347,7 @@ pub fn bytelike_parse(input: TokenStream) -> TokenStream {
     let name = &input.ident;
 
     let expanded = quote! {
-          #[cfg(feature = "std")]
+        #[cfg(feature = "std")]
         use std::string::String;
 
         #[cfg(not(feature = "std"))]
@@ -386,7 +386,7 @@ pub fn bytelike_serde(input: TokenStream) -> TokenStream {
                 impl<'de> bytelike::serde::de::Visitor<'de> for ByteSizeVistor {
                     type Value = #name;
 
-                    fn expecting(&self, formatter: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+                    fn expecting(&self, formatter: &mut core::fmt::Formatter<'_>) -> core:fmt::Result {
                         formatter.write_str("an integer or string")
                     }
 

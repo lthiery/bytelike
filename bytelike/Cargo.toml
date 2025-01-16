@@ -13,6 +13,6 @@ serde = { version = "1.0", features = ["derive"], optional = true }
 
 [features]
 default = ["std", "derive"]
-std = []
+std = ["serde/std"]
 derive = ["dep:bytelike-derive"]
-serde = ["dep:serde", "std", "bytelike-derive/serde"]
+serde = ["dep:serde", "bytelike-derive/serde"]
