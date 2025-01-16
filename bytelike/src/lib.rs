@@ -1,4 +1,3 @@
-#![no_std]
 #![cfg_attr(not(feature = "std"), no_std)]
 
 //! Common types and functions for byte size handling
@@ -6,6 +5,9 @@ extern crate alloc;
 
 #[cfg(feature = "std")]
 extern crate std;
+
+#[cfg(not(feature = "std"))]
+extern crate alloc;
 
 #[cfg(feature ="serde")]
 pub use serde;
