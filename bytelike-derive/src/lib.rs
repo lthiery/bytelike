@@ -294,7 +294,7 @@ pub fn bytelike_fromstr(input: TokenStream) -> TokenStream {
         impl core::str::FromStr for #name {
             type Err = ::bytelike::String;
 
-            fn from_str(value: &str) -> Result<Self, Self::Err> {
+            fn from_str(value: &str) -> core::result::Result<Self, Self::Err> {
                 if let Ok(v) = value.parse::<u64>() {
                     return Ok(Self(v));
                 }
@@ -355,7 +355,7 @@ pub fn bytelike_serde(input: TokenStream) -> TokenStream {
 
     let expanded = quote! {
         impl<'de> ::bytelike::serde::Deserialize<'de> for #name {
-            fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
+            fn deserialize<D>(deserializer: D) -> core::result::Result<Self, D::Error>
             where
                 D: ::bytelike::serde::Deserializer<'de>,
             {
@@ -368,7 +368,7 @@ pub fn bytelike_serde(input: TokenStream) -> TokenStream {
                         formatter.write_str("an integer or string")
                     }
 
-                    fn visit_i64<E: ::bytelike::serde::de::Error>(self, value: i64) -> Result<Self::Value, E> {
+                    fn visit_i64<E: ::bytelike::serde::de::Error>(self, value: i64) -> core::result::Result<Self::Value, E> {
                         if let Ok(val) = u64::try_from(value) {
                             Ok(#name(val))
                         } else {
@@ -379,11 +379,11 @@ pub fn bytelike_serde(input: TokenStream) -> TokenStream {
                         }
                     }
 
-                    fn visit_u64<E: ::bytelike::serde::de::Error>(self, value: u64) -> Result<Self::Value, E> {
+                    fn visit_u64<E: ::bytelike::serde::de::Error>(self, value: u64) -> core::result::Result<Self::Value, E> {
                         Ok(#name(value))
                     }
 
-                    fn visit_str<E: ::bytelike::serde::de::Error>(self, value: &str) -> Result<Self::Value, E> {
+                    fn visit_str<E: ::bytelike::serde::de::Error>(self, value: &str) -> core::result::Result<Self::Value, E> {
                         if let Ok(val) = value.parse() {
                             Ok(val)
                         } else {
@@ -403,7 +403,7 @@ pub fn bytelike_serde(input: TokenStream) -> TokenStream {
             }
         }
         impl ::bytelike::serde::Serialize for #name {
-            fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+            fn serialize<S>(&self, serializer: S) -> core::result::Result<S::Ok, S::Error>
             where
                 S: ::bytelike::serde::Serializer,
             {
