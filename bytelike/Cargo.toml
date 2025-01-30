@@ -4,11 +4,11 @@ version = "0.1.10"
 edition = "2021"
 authors = ["Louis Thiery <thiery.louis@gmail.com>"]
 description = "Common types and functions for byte size handling"
-keywords = ["byte", "byte-size", "utility", "human-readable", "format", "no_std"]
+keywords = ["byte-size", "utility", "human-readable", "no_std"]
 license = "Apache-2.0"
 
 [dependencies]
-bytelike-derive = { version = "^0.1.11-alpha.0", path = "../bytelike-derive", optional = true }
+bytelike-derive = { version = "0.1.10", optional = true }
 serde = { version = "1.0", features = ["derive"], optional = true }
 
 [features]
