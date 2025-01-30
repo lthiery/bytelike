@@ -82,7 +82,7 @@ pub fn bytelike_ops(input: TokenStream) -> TokenStream {
     let name = &input.ident;
 
     let expanded = quote! {
-        impl std::ops::Add<#name> for #name {
+        impl core::ops::Add<#name> for #name {
             type Output = #name;
 
             #[inline(always)]
@@ -91,14 +91,14 @@ pub fn bytelike_ops(input: TokenStream) -> TokenStream {
             }
         }
 
-        impl std::ops::AddAssign<#name> for #name {
+        impl core::ops::AddAssign<#name> for #name {
             #[inline(always)]
             fn add_assign(&mut self, rhs: #name) {
                 self.0 += rhs.0
             }
         }
 
-        impl<T> std::ops::Add<T> for #name
+        impl<T> core::ops::Add<T> for #name
         where
             T: Into<u64>,
         {
@@ -109,7 +109,7 @@ pub fn bytelike_ops(input: TokenStream) -> TokenStream {
             }
         }
 
-        impl<T> std::ops::AddAssign<T> for #name
+        impl<T> core::ops::AddAssign<T> for #name
         where
             T: Into<u64>,
         {
@@ -119,7 +119,7 @@ pub fn bytelike_ops(input: TokenStream) -> TokenStream {
             }
         }
 
-        impl std::ops::Sub<#name> for #name {
+        impl core::ops::Sub<#name> for #name {
             type Output = #name;
 
             #[inline(always)]
@@ -128,14 +128,14 @@ pub fn bytelike_ops(input: TokenStream) -> TokenStream {
             }
         }
 
-        impl std::ops::SubAssign<#name> for #name {
+        impl core::ops::SubAssign<#name> for #name {
             #[inline(always)]
             fn sub_assign(&mut self, rhs: #name) {
                 self.0 -= rhs.0
             }
         }
 
-        impl<T> std::ops::Sub<T> for #name
+        impl<T> core::ops::Sub<T> for #name
         where
             T: Into<u64>,
         {
@@ -147,7 +147,7 @@ pub fn bytelike_ops(input: TokenStream) -> TokenStream {
             }
         }
 
-        impl<T> std::ops::SubAssign<T> for #name
+        impl<T> core::ops::SubAssign<T> for #name
         where
             T: Into<u64>,
         {
@@ -157,7 +157,7 @@ pub fn bytelike_ops(input: TokenStream) -> TokenStream {
             }
         }
 
-        impl<T> std::ops::Mul<T> for #name
+        impl<T> core::ops::Mul<T> for #name
         where
             T: Into<u64>,
         {
@@ -168,7 +168,7 @@ pub fn bytelike_ops(input: TokenStream) -> TokenStream {
             }
         }
 
-        impl<T> std::ops::MulAssign<T> for #name
+        impl<T> core::ops::MulAssign<T> for #name
         where
             T: Into<u64>,
         {
@@ -178,7 +178,7 @@ pub fn bytelike_ops(input: TokenStream) -> TokenStream {
             }
         }
 
-        impl std::ops::Add<#name> for u64 {
+        impl core::ops::Add<#name> for u64 {
             type Output = #name;
             #[inline(always)]
             fn add(self, rhs: #name) -> #name {
@@ -186,7 +186,7 @@ pub fn bytelike_ops(input: TokenStream) -> TokenStream {
             }
         }
 
-        impl std::ops::Add<#name> for u32 {
+        impl core::ops::Add<#name> for u32 {
             type Output = #name;
             #[inline(always)]
             fn add(self, rhs: #name) -> #name {
@@ -194,7 +194,7 @@ pub fn bytelike_ops(input: TokenStream) -> TokenStream {
             }
         }
 
-        impl std::ops::Add<#name> for u16 {
+        impl core::ops::Add<#name> for u16 {
             type Output = #name;
             #[inline(always)]
             fn add(self, rhs: #name) -> #name {
@@ -202,7 +202,7 @@ pub fn bytelike_ops(input: TokenStream) -> TokenStream {
             }
         }
 
-        impl std::ops::Add<#name> for u8 {
+        impl core::ops::Add<#name> for u8 {
             type Output = #name;
             #[inline(always)]
             fn add(self, rhs: #name) -> #name {
@@ -210,7 +210,7 @@ pub fn bytelike_ops(input: TokenStream) -> TokenStream {
             }
         }
 
-        impl std::ops::Mul<#name> for u64 {
+        impl core::ops::Mul<#name> for u64 {
             type Output = #name;
             #[inline(always)]
             fn mul(self, rhs: #name) -> #name {
@@ -218,7 +218,7 @@ pub fn bytelike_ops(input: TokenStream) -> TokenStream {
             }
         }
 
-        impl std::ops::Mul<#name> for u32 {
+        impl core::ops::Mul<#name> for u32 {
             type Output = #name;
             #[inline(always)]
             fn mul(self, rhs: #name) -> #name {
@@ -226,7 +226,7 @@ pub fn bytelike_ops(input: TokenStream) -> TokenStream {
             }
         }
 
-        impl std::ops::Mul<#name> for u16 {
+        impl core::ops::Mul<#name> for u16 {
             type Output = #name;
             #[inline(always)]
             fn mul(self, rhs: #name) -> #name {
@@ -234,7 +234,7 @@ pub fn bytelike_ops(input: TokenStream) -> TokenStream {
             }
         }
 
-        impl std::ops::Mul<#name> for u8 {
+        impl core::ops::Mul<#name> for u8 {
             type Output = #name;
             #[inline(always)]
             fn mul(self, rhs: #name) -> #name {
@@ -244,18 +244,18 @@ pub fn bytelike_ops(input: TokenStream) -> TokenStream {
 
         impl #name {
             /// Provides `ByteLikeRange` with explicit lower and upper bounds.
-            pub fn range<I: Into<Self>>(start: I, stop: I) -> bytelike::ByteLikeRange<Self> {
-                bytelike::ByteLikeRange::new(Some(start), Some(stop))
+            pub fn range<I: Into<Self>>(start: I, stop: I) -> ::bytelike::ByteLikeRange<Self> {
+                ::bytelike::ByteLikeRange::new(Some(start), Some(stop))
             }
 
             /// Provides `ByteLikeRange` with explicit lower bound. Upper bound is set to `u64::MAX`.
-            pub fn range_start<I: Into<Self>>(start: I) -> bytelike::ByteLikeRange<Self> {
-                bytelike::ByteLikeRange::new(Some(start), None)
+            pub fn range_start<I: Into<Self>>(start: I) -> ::bytelike::ByteLikeRange<Self> {
+                ::bytelike::ByteLikeRange::new(Some(start), None)
             }
 
             /// Provides `ByteLikeRange` with explicit lower bound. Upper bound is set to `u64::MAX`.
-            pub fn range_stop<I: Into<Self>>(stop: I) -> bytelike::ByteLikeRange<Self> {
-                bytelike::ByteLikeRange::new(None, Some(stop.into()))
+            pub fn range_stop<I: Into<Self>>(stop: I) -> ::bytelike::ByteLikeRange<Self> {
+                ::bytelike::ByteLikeRange::new(None, Some(stop.into()))
             }
         }
     };
@@ -291,29 +291,28 @@ pub fn bytelike_fromstr(input: TokenStream) -> TokenStream {
     let name = &input.ident;
 
     let expanded = quote! {
-        impl std::str::FromStr for #name {
-            type Err = alloc::string::String;
+        impl core::str::FromStr for #name {
+            type Err = ::bytelike::String;
 
             fn from_str(value: &str) -> Result<Self, Self::Err> {
                 if let Ok(v) = value.parse::<u64>() {
                     return Ok(Self(v));
                 }
-                let number = bytelike::take_while(value, |c| c.is_ascii_digit() || c == '.');
+                let number = ::bytelike::take_while(value, |c| c.is_ascii_digit() || c == '.');
                 match number.parse::<f64>() {
                     Ok(v) => {
-                        let suffix = bytelike::skip_while(value, |c| {
+                        let suffix = ::bytelike::skip_while(value, |c| {
                             c.is_whitespace() || c.is_ascii_digit() || c == '.'
                         });
-                        match suffix.parse::<bytelike::Unit>() {
+                        match suffix.parse::<::bytelike::Unit>() {
                             Ok(u) => Ok(Self((v * u64::from(u) as f64) as u64)),
-                            Err(error) => Err(alloc::format!(
+                            Err(error) => Err(::bytelike::format!(
                                 "couldn't parse {:?} into a known SI unit, {}",
                                 suffix, error
                             )),
                         }
                     }
-                    Err(error) => Err(alloc::
-                        format!(
+                    Err(error) => Err(::bytelike::format!(
                         "couldn't parse {:?} into a ByteSize, {}",
                         value, error
                     )),
@@ -334,8 +333,8 @@ pub fn bytelike_parse(input: TokenStream) -> TokenStream {
         impl #name {
             /// Returns the size as a string with an optional SI unit.
             #[inline(always)]
-            pub fn to_string_as(&self, si_unit: bool) -> alloc::string::String {
-                bytelike::to_string(self.0, si_unit)
+            pub fn to_string_as(&self, si_unit: bool) -> ::bytelike::String {
+                ::bytelike::to_string(self.0, si_unit)
             }
 
             /// Returns the inner u64 value.
@@ -348,47 +347,48 @@ pub fn bytelike_parse(input: TokenStream) -> TokenStream {
 
     TokenStream::from(expanded)
 }
+
 #[proc_macro_derive(ByteLikeSerde)]
 pub fn bytelike_serde(input: TokenStream) -> TokenStream {
     let input = parse_macro_input!(input as DeriveInput);
     let name = &input.ident;
 
     let expanded = quote! {
-        impl<'de> bytelike::serde::Deserialize<'de> for #name {
+        impl<'de> ::bytelike::serde::Deserialize<'de> for #name {
             fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
             where
-                D: bytelike::serde::Deserializer<'de>,
+                D: ::bytelike::serde::Deserializer<'de>,
             {
                 struct ByteSizeVistor;
 
-                impl<'de> bytelike::serde::de::Visitor<'de> for ByteSizeVistor {
+                impl<'de> ::bytelike::serde::de::Visitor<'de> for ByteSizeVistor {
                     type Value = #name;
 
-                    fn expecting(&self, formatter: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+                    fn expecting(&self, formatter: &mut core::fmt::Formatter<'_>) -> core::fmt::Result {
                         formatter.write_str("an integer or string")
                     }
 
-                    fn visit_i64<E: bytelike::serde::de::Error>(self, value: i64) -> Result<Self::Value, E> {
+                    fn visit_i64<E: ::bytelike::serde::de::Error>(self, value: i64) -> Result<Self::Value, E> {
                         if let Ok(val) = u64::try_from(value) {
                             Ok(#name(val))
                         } else {
                             Err(E::invalid_value(
-                                bytelike::serde::de::Unexpected::Signed(value),
+                                ::bytelike::serde::de::Unexpected::Signed(value),
                                 &"integer overflow",
                             ))
                         }
                     }
 
-                    fn visit_u64<E: bytelike::serde::de::Error>(self, value: u64) -> Result<Self::Value, E> {
+                    fn visit_u64<E: ::bytelike::serde::de::Error>(self, value: u64) -> Result<Self::Value, E> {
                         Ok(#name(value))
                     }
 
-                    fn visit_str<E: bytelike::serde::de::Error>(self, value: &str) -> Result<Self::Value, E> {
+                    fn visit_str<E: ::bytelike::serde::de::Error>(self, value: &str) -> Result<Self::Value, E> {
                         if let Ok(val) = value.parse() {
                             Ok(val)
                         } else {
                             Err(E::invalid_value(
-                                bytelike::serde::de::Unexpected::Str(value),
+                                ::bytelike::serde::de::Unexpected::Str(value),
                                 &"parsable string",
                             ))
                         }
@@ -402,12 +402,11 @@ pub fn bytelike_serde(input: TokenStream) -> TokenStream {
                 }
             }
         }
-        impl bytelike::serde::Serialize for #name {
+        impl ::bytelike::serde::Serialize for #name {
             fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
             where
-                S: bytelike::serde::Serializer,
+                S: ::bytelike::serde::Serializer,
             {
-                use alloc::string::ToString;
                 if serializer.is_human_readable() {
                     <str>::serialize(self.to_string().as_str(), serializer)
                 } else {

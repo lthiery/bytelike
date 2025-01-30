@@ -10,8 +10,9 @@ extern crate std;
 #[cfg(feature ="serde")]
 pub use serde;
 
-use alloc::{format, string::String};
-use core::str::FromStr;
+// Re-export necessary types to avoid users needing explicit extern crate declarations
+pub use alloc::{format, string::{String, ToString}};
+pub use core::str::FromStr;
 
 #[cfg(feature = "derive")]
 pub use bytelike_derive::*;

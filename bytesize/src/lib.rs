@@ -1,10 +1,6 @@
-#![no_std]
+#![cfg_attr(not(feature = "std"), no_std)]
 #![warn(missing_docs)]
 #![doc = include_str!("../README.md")]
-
-extern crate alloc;
-#[cfg(feature = "std")]
-extern crate std;
 
 pub use bytelike::*;
 
@@ -14,11 +10,13 @@ pub use bytelike::*;
 #[cfg_attr(feature = "arbitrary", derive(arbitrary::Arbitrary))]
 pub struct ByteSize(pub u64);
 
+// Re-export for doc tests
+#[doc(hidden)]
+pub use self::ByteSize as _doc_ByteSize;
+
 #[cfg(test)]
 mod tests {
     use super::*;
-    #[cfg(feature = "std")]
-    use std::format;
 
     #[test]
     fn test_arithmetic_op() {
@@ -104,7 +102,6 @@ mod tests {
     }
 
     fn assert_to_string(expected: &str, b: ByteSize, si: bool) {
-        use alloc::string::ToString;
         assert_eq!(expected.to_string(), b.to_string_as(si));
     }
 
