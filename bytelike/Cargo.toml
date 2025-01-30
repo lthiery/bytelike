@@ -1,6 +1,6 @@
 [package]
 name = "bytelike"
-version = "0.1.10-alpha.0"
+version = "0.1.10"
 edition = "2021"
 authors = ["Louis Thiery <thiery.louis@gmail.com>"]
 description = "Common types and functions for byte size handling"
