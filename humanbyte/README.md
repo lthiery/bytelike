@@ -48,7 +48,7 @@ let size = Foo::mb(1);
 assert_eq!(size.to_string(), "1.0 MB");
 ```
 
-See the documentation for bytescale to see more examples of what you can do with the HumanByte new type (just replace `Foo` with your own type name).
+See the documentation for [bytescale][bytescale] to see more examples of what you can do with the HumanByte new type.
 
 In addition, if you only want some of the HumanByte functions derived, you can use any of the following derives in an
 a la carte fashion:
@@ -58,3 +58,6 @@ a la carte fashion:
 * HumanByteOps
 * HumanByteFromStr
 * HumanByteSerde (requires the `serde` feature)
+
+[bytescale]: https://docs.rs/bytescale/latest/bytescale
+
