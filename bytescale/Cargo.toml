@@ -1,0 +1,27 @@
+[package]
+name = "bytescale"
+description = "Demonstration of humanbyte usage for human readable byte functions"
+version = "0.1.0"
+authors = ["Louis Thiery <thiery.louis@gmail.com>"]
+keywords = ["byte", "utility", "human-readable", "format"]
+categories = ["development-tools", "filesystem"]
+repository = "https://github.com/lthiery/humanbyte"
+license = "Apache-2.0"
+edition = "2021"
+rust-version = "1.65"
+
+[dependencies]
+arbitrary = { version = "1", features = ["derive"], optional = true }
+humanbyte = { path = "../humanbyte", features = ["derive"] }
+
+[dev-dependencies]
+serde = { version = "1.0", features = ["derive"] }
+serde_json = { version = "1.0", features = ["std"] }
+toml = "0.8"
+
+[features]
+default = ["std"]
+std = ["humanbyte/std"]
+derive = []
+arbitrary = ["dep:arbitrary", "std"]
+serde = ["humanbyte/serde"]

@@ -7,15 +7,18 @@ extern crate alloc;
 #[cfg(feature = "std")]
 extern crate std;
 
-#[cfg(feature ="serde")]
+#[cfg(feature = "serde")]
 pub use serde;
 
 // Re-export necessary types to avoid users needing explicit extern crate declarations
-pub use alloc::{format, string::{String, ToString}};
+pub use alloc::{
+    format,
+    string::{String, ToString},
+};
 pub use core::str::FromStr;
 
 #[cfg(feature = "derive")]
-pub use bytelike_derive::*;
+pub use humanbyte_derive::*;
 
 /// byte size for 1 byte
 pub const B: u64 = 1;
@@ -169,21 +172,21 @@ impl FromStr for Unit {
     }
 }
 
-pub struct ByteLikeRange<T: From<u64>> {
+pub struct HumanByteRange<T: From<u64>> {
     start: T,
     stop: T,
 }
 
-impl<T: From<u64>> ByteLikeRange<T> {
+impl<T: From<u64>> HumanByteRange<T> {
     pub fn new<I: Into<T>>(start: Option<I>, stop: Option<I>) -> Self {
-        ByteLikeRange {
+        HumanByteRange {
             start: start.map(Into::into).unwrap_or(0.into()),
             stop: stop.map(Into::into).unwrap_or(u64::MAX.into()),
         }
     }
 }
 
-impl<T: From<u64>> core::ops::RangeBounds<T> for ByteLikeRange<T> {
+impl<T: From<u64>> core::ops::RangeBounds<T> for HumanByteRange<T> {
     fn start_bound(&self) -> core::ops::Bound<&T> {
         core::ops::Bound::Included(&self.start)
     }

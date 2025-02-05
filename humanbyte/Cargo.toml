@@ -1,0 +1,18 @@
+[package]
+name = "humanbyte"
+version = "0.1.0"
+edition = "2021"
+authors = ["Louis Thiery <thiery.louis@gmail.com>"]
+description = "A procedural macro for deriving human readable byte functions"
+keywords = ["byte-size", "utility", "human-readable", "no_std"]
+license = "Apache-2.0"
+
+[dependencies]
+humanbyte-derive = { version = "0.1", path = "../humanbyte-derive", optional = true }
+serde = { version = "1.0", features = ["derive"], optional = true }
+
+[features]
+default = ["std"]
+std = []
+derive = ["dep:humanbyte-derive"]
+serde = ["dep:serde", "std", "humanbyte-derive/serde"]

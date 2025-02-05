@@ -3,41 +3,41 @@ use proc_macro2::Span;
 use quote::quote;
 use syn::{parse_macro_input, DeriveInput};
 
-#[proc_macro_derive(ByteLike)]
-pub fn bytelike(input: TokenStream) -> TokenStream {
+#[proc_macro_derive(HumanByte)]
+pub fn humanbyte(input: TokenStream) -> TokenStream {
     let input_str = input.to_string();
-    let constructor = bytelike_constructor(input_str.parse().unwrap());
-    let display = bytelike_display(input_str.parse().unwrap());
-    let parse = bytelike_parse(input_str.parse().unwrap());
-    let ops = bytelike_ops(input_str.parse().unwrap());
-    let fromstr = bytelike_fromstr(input_str.parse().unwrap());
+    let constructor = humanbyte_constructor(input_str.parse().unwrap());
+    let display = humanbyte_display(input_str.parse().unwrap());
+    let parse = humanbyte_parse(input_str.parse().unwrap());
+    let ops = humanbyte_ops(input_str.parse().unwrap());
+    let fromstr = humanbyte_fromstr(input_str.parse().unwrap());
 
     let mut combined = format!("{}{}{}{}{}", constructor, display, parse, ops, fromstr);
     if cfg!(feature = "serde") {
-        let serde = bytelike_serde(input_str.parse().unwrap());
+        let serde = humanbyte_serde(input_str.parse().unwrap());
         combined = format!("{}{}", combined, serde);
     }
     combined.parse().unwrap()
 }
 
-#[proc_macro_derive(ByteLikeConstructor)]
-pub fn bytelike_constructor(input: TokenStream) -> TokenStream {
+#[proc_macro_derive(HumanByteConstructor)]
+pub fn humanbyte_constructor(input: TokenStream) -> TokenStream {
     let input = parse_macro_input!(input as DeriveInput);
     let name = &input.ident;
 
     // Define units with their multipliers and descriptions
     let units = vec![
         ("b", "1", "bytes"),
-        ("kb", "bytelike::KB", "kilobytes"),
-        ("kib", "bytelike::KIB", "kibibytes"),
-        ("mb", "bytelike::MB", "megabytes"),
-        ("mib", "bytelike::MIB", "mebibytes"),
-        ("gb", "bytelike::GB", "gigabytes"),
-        ("gib", "bytelike::GIB", "gibibytes"),
-        ("tb", "bytelike::TB", "terabytes"),
-        ("tib", "bytelike::TIB", "tebibytes"),
-        ("pb", "bytelike::PB", "petabytes"),
-        ("pib", "bytelike::PIB", "pebibytes"),
+        ("kb", "humanbyte::KB", "kilobytes"),
+        ("kib", "humanbyte::KIB", "kibibytes"),
+        ("mb", "humanbyte::MB", "megabytes"),
+        ("mib", "humanbyte::MIB", "mebibytes"),
+        ("gb", "humanbyte::GB", "gigabytes"),
+        ("gib", "humanbyte::GIB", "gibibytes"),
+        ("tb", "humanbyte::TB", "terabytes"),
+        ("tib", "humanbyte::TIB", "tebibytes"),
+        ("pb", "humanbyte::PB", "petabytes"),
+        ("pib", "humanbyte::PIB", "pebibytes"),
     ];
 
     // Generate methods
@@ -76,8 +76,8 @@ pub fn bytelike_constructor(input: TokenStream) -> TokenStream {
     TokenStream::from(expanded)
 }
 
-#[proc_macro_derive(ByteLikeOps)]
-pub fn bytelike_ops(input: TokenStream) -> TokenStream {
+#[proc_macro_derive(HumanByteOps)]
+pub fn humanbyte_ops(input: TokenStream) -> TokenStream {
     let input = parse_macro_input!(input as DeriveInput);
     let name = &input.ident;
 
@@ -243,19 +243,19 @@ pub fn bytelike_ops(input: TokenStream) -> TokenStream {
         }
 
         impl #name {
-            /// Provides `ByteLikeRange` with explicit lower and upper bounds.
-            pub fn range<I: Into<Self>>(start: I, stop: I) -> ::bytelike::ByteLikeRange<Self> {
-                ::bytelike::ByteLikeRange::new(Some(start), Some(stop))
+            /// Provides `HumanByteRange` with explicit lower and upper bounds.
+            pub fn range<I: Into<Self>>(start: I, stop: I) -> ::humanbyte::HumanByteRange<Self> {
+                ::humanbyte::HumanByteRange::new(Some(start), Some(stop))
             }
 
-            /// Provides `ByteLikeRange` with explicit lower bound. Upper bound is set to `u64::MAX`.
-            pub fn range_start<I: Into<Self>>(start: I) -> ::bytelike::ByteLikeRange<Self> {
-                ::bytelike::ByteLikeRange::new(Some(start), None)
+            /// Provides `HumanByteRange` with explicit lower bound. Upper bound is set to `u64::MAX`.
+            pub fn range_start<I: Into<Self>>(start: I) -> ::humanbyte::HumanByteRange<Self> {
+                ::humanbyte::HumanByteRange::new(Some(start), None)
             }
 
-            /// Provides `ByteLikeRange` with explicit lower bound. Upper bound is set to `u64::MAX`.
-            pub fn range_stop<I: Into<Self>>(stop: I) -> ::bytelike::ByteLikeRange<Self> {
-                ::bytelike::ByteLikeRange::new(None, Some(stop.into()))
+            /// Provides `HumanByteRange` with explicit lower bound. Upper bound is set to `u64::MAX`.
+            pub fn range_stop<I: Into<Self>>(stop: I) -> ::humanbyte::HumanByteRange<Self> {
+                ::humanbyte::HumanByteRange::new(None, Some(stop.into()))
             }
         }
     };
@@ -263,15 +263,15 @@ pub fn bytelike_ops(input: TokenStream) -> TokenStream {
     TokenStream::from(expanded)
 }
 
-#[proc_macro_derive(ByteLikeDisplay)]
-pub fn bytelike_display(input: TokenStream) -> TokenStream {
+#[proc_macro_derive(HumanByteDisplay)]
+pub fn humanbyte_display(input: TokenStream) -> TokenStream {
     let input = parse_macro_input!(input as DeriveInput);
     let name = &input.ident;
 
     let expanded = quote! {
         impl core::fmt::Display for #name {
             fn fmt(&self, f: &mut core::fmt::Formatter) -> core::fmt::Result {
-                f.pad(&bytelike::to_string(self.0, true))
+                f.pad(&humanbyte::to_string(self.0, true))
             }
         }
 
@@ -285,34 +285,32 @@ pub fn bytelike_display(input: TokenStream) -> TokenStream {
     TokenStream::from(expanded)
 }
 
-#[proc_macro_derive(ByteLikeFromStr)]
-pub fn bytelike_fromstr(input: TokenStream) -> TokenStream {
+#[proc_macro_derive(HumanByteFromStr)]
+pub fn humanbyte_fromstr(input: TokenStream) -> TokenStream {
     let input = parse_macro_input!(input as DeriveInput);
     let name = &input.ident;
 
     let expanded = quote! {
         impl core::str::FromStr for #name {
-            type Err = ::bytelike::String;
+            type Err = ::humanbyte::String;
 
             fn from_str(value: &str) -> core::result::Result<Self, Self::Err> {
                 if let Ok(v) = value.parse::<u64>() {
                     return Ok(Self(v));
                 }
-                let number = ::bytelike::take_while(value, |c| c.is_ascii_digit() || c == '.');
+                let number = ::humanbyte::take_while(value, |c| c.is_ascii_digit() || c == '.');
                 match number.parse::<f64>() {
                     Ok(v) => {
-                        let suffix = ::bytelike::skip_while(value, |c| {
-                            c.is_whitespace() || c.is_ascii_digit() || c == '.'
-                        });
-                        match suffix.parse::<::bytelike::Unit>() {
+                        let suffix = skip_while(&value[number.len()..], char::is_whitespace);
+                        match suffix.parse::<::humanbyte::Unit>() {
                             Ok(u) => Ok(Self((v * u64::from(u) as f64) as u64)),
-                            Err(error) => Err(::bytelike::format!(
+                            Err(error) => Err(::humanbyte::format!(
                                 "couldn't parse {:?} into a known SI unit, {}",
                                 suffix, error
                             )),
                         }
                     }
-                    Err(error) => Err(::bytelike::format!(
+                    Err(error) => Err(::humanbyte::format!(
                         "couldn't parse {:?} into a ByteSize, {}",
                         value, error
                     )),
@@ -324,8 +322,8 @@ pub fn bytelike_fromstr(input: TokenStream) -> TokenStream {
     TokenStream::from(expanded)
 }
 
-#[proc_macro_derive(ByteLikeParse)]
-pub fn bytelike_parse(input: TokenStream) -> TokenStream {
+#[proc_macro_derive(HumanByteParse)]
+pub fn humanbyte_parse(input: TokenStream) -> TokenStream {
     let input = parse_macro_input!(input as DeriveInput);
     let name = &input.ident;
 
@@ -333,8 +331,8 @@ pub fn bytelike_parse(input: TokenStream) -> TokenStream {
         impl #name {
             /// Returns the size as a string with an optional SI unit.
             #[inline(always)]
-            pub fn to_string_as(&self, si_unit: bool) -> ::bytelike::String {
-                ::bytelike::to_string(self.0, si_unit)
+            pub fn to_string_as(&self, si_unit: bool) -> ::humanbyte::String {
+                ::humanbyte::to_string(self.0, si_unit)
             }
 
             /// Returns the inner u64 value.
@@ -348,47 +346,47 @@ pub fn bytelike_parse(input: TokenStream) -> TokenStream {
     TokenStream::from(expanded)
 }
 
-#[proc_macro_derive(ByteLikeSerde)]
-pub fn bytelike_serde(input: TokenStream) -> TokenStream {
+#[proc_macro_derive(HumanByteSerde)]
+pub fn humanbyte_serde(input: TokenStream) -> TokenStream {
     let input = parse_macro_input!(input as DeriveInput);
     let name = &input.ident;
 
     let expanded = quote! {
-        impl<'de> ::bytelike::serde::Deserialize<'de> for #name {
+        impl<'de> ::humanbyte::serde::Deserialize<'de> for #name {
             fn deserialize<D>(deserializer: D) -> core::result::Result<Self, D::Error>
             where
-                D: ::bytelike::serde::Deserializer<'de>,
+                D: ::humanbyte::serde::Deserializer<'de>,
             {
                 struct ByteSizeVistor;
 
-                impl<'de> ::bytelike::serde::de::Visitor<'de> for ByteSizeVistor {
+                impl<'de> ::humanbyte::serde::de::Visitor<'de> for ByteSizeVistor {
                     type Value = #name;
 
                     fn expecting(&self, formatter: &mut core::fmt::Formatter<'_>) -> core::fmt::Result {
                         formatter.write_str("an integer or string")
                     }
 
-                    fn visit_i64<E: ::bytelike::serde::de::Error>(self, value: i64) -> core::result::Result<Self::Value, E> {
+                    fn visit_i64<E: ::humanbyte::serde::de::Error>(self, value: i64) -> core::result::Result<Self::Value, E> {
                         if let Ok(val) = u64::try_from(value) {
                             Ok(#name(val))
                         } else {
                             Err(E::invalid_value(
-                                ::bytelike::serde::de::Unexpected::Signed(value),
+                                ::humanbyte::serde::de::Unexpected::Signed(value),
                                 &"integer overflow",
                             ))
                         }
                     }
 
-                    fn visit_u64<E: ::bytelike::serde::de::Error>(self, value: u64) -> core::result::Result<Self::Value, E> {
+                    fn visit_u64<E: ::humanbyte::serde::de::Error>(self, value: u64) -> core::result::Result<Self::Value, E> {
                         Ok(#name(value))
                     }
 
-                    fn visit_str<E: ::bytelike::serde::de::Error>(self, value: &str) -> core::result::Result<Self::Value, E> {
+                    fn visit_str<E: ::humanbyte::serde::de::Error>(self, value: &str) -> core::result::Result<Self::Value, E> {
                         if let Ok(val) = value.parse() {
                             Ok(val)
                         } else {
                             Err(E::invalid_value(
-                                ::bytelike::serde::de::Unexpected::Str(value),
+                                ::humanbyte::serde::de::Unexpected::Str(value),
                                 &"parsable string",
                             ))
                         }
@@ -402,10 +400,10 @@ pub fn bytelike_serde(input: TokenStream) -> TokenStream {
                 }
             }
         }
-        impl ::bytelike::serde::Serialize for #name {
+        impl ::humanbyte::serde::Serialize for #name {
             fn serialize<S>(&self, serializer: S) -> core::result::Result<S::Ok, S::Error>
             where
-                S: ::bytelike::serde::Serializer,
+                S: ::humanbyte::serde::Serializer,
             {
                 if serializer.is_human_readable() {
                     <str>::serialize(self.to_string().as_str(), serializer)

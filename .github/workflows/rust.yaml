@@ -1,0 +1,48 @@
+name: Continuous Integration
+
+on:
+  push:
+    branches: [main]
+    tags: ["v*"]
+  pull_request:
+    branches: [main]
+
+jobs:
+  rust:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: true # Fetch and checkout submodules
+
+      # Rust cache
+      - uses: Swatinem/rust-cache@v2
+
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          toolchain: stable
+          components: clippy, rustfmt
+          
+      - name: Install cargo-sort
+        run: cargo install cargo-sort
+
+      - name: Cancel previous runs
+        uses: styfle/cancel-workflow-action@0.9.1
+        with:
+          access_token: ${{ github.token }}
+
+      - name: Check formatting
+        run: cargo fmt -- --check
+
+      - name: Clippy
+        uses: actions-rs/clippy-check@v1
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          args: --all-features -- -Dclippy::all
+
+      - name: Test
+        run: cargo test
+
+      - name: Check TOML files are sorted
+        run: cargo sort --check
