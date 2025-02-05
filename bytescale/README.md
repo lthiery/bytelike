@@ -1,6 +1,6 @@
 ## ByteScale
 
-[![CI](https://github.com/lthiery/humanbyte/actions/workflows/ci.yml/badge.svg)](https://github.com/lthiery/humanbyte/actions/workflows/ci.yml)
+[![CI](https://github.com/lthiery/humanbyte/actions/workflows/rust.yaml/badge.svg)](https://github.com/lthiery/humanbyte/actions/workflows/rust.yaml)
 [![Crates.io Version](https://img.shields.io/crates/v/bytescale.svg)](https://crates.io/crates/bytescale)
 
 `ByteScale` is a utility for human-readable byte count representations.
