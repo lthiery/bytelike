@@ -86,8 +86,8 @@ mod tests {
     #[test]
     fn test_display() {
         assert_display!("215 B", ByteScale::b(215));
-        assert_display!("1.0 KiB", ByteScale::kib(1));
-        assert_display!("301.0 KiB", ByteScale::kib(301));
+        assert_display!("1.0 kiB", ByteScale::kib(1));
+        assert_display!("301.0 kiB", ByteScale::kib(301));
         assert_display!("419.0 MiB", ByteScale::mib(419));
         assert_display!("518.0 GiB", ByteScale::gib(518));
         assert_display!("815.0 TiB", ByteScale::tib(815));
@@ -117,10 +117,10 @@ mod tests {
         assert_to_string!("215 B", ByteScale::b(215), true);
         assert_to_string!("215 B", ByteScale::b(215), false);
 
-        assert_to_string!("1.0 KiB", ByteScale::kib(1), true);
+        assert_to_string!("1.0 kiB", ByteScale::kib(1), true);
         assert_to_string!("1.0 KB", ByteScale::kib(1), false);
 
-        assert_to_string!("293.9 KiB", ByteScale::kb(301), true);
+        assert_to_string!("293.9 kiB", ByteScale::kb(301), true);
         assert_to_string!("301.0 KB", ByteScale::kb(301), false);
 
         assert_to_string!("1.0 MiB", ByteScale::mib(1), true);

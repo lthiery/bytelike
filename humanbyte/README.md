@@ -32,20 +32,19 @@ humanbyte = { version = "0.1" }
 humanbyte = { version = "0.1", no-default-features = true }
 ```
 
-Next, define your new type and derive `HumanByte` for it:
+Define your new type and derive `HumanByte` for it. This will derive all the necessary functions for your new type. You
+can then use it like this:
 
 ```rust
 use humanbyte_derive::HumanByte;
 
 #[derive(HumanByte)]
-pub struct Foo(u64);
-```
+pub struct NewType(u64);
 
-This will derive all the necessary functions for your new type. You can then use it like this:
-
-```rust
-let size = Foo::mb(1);
-assert_eq!(size.to_string(), "1.0 MB");
+fn main() {
+    let size = NewType::kib(1);
+    assert_eq!(size.to_string(), "1.0 KiB");
+}
 ```
 
 See the documentation for [bytescale][bytescale] to see more examples of what you can do with the HumanByte new type.

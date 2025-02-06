@@ -7,7 +7,7 @@
 
 Features:
 
-- Pre-defined constants for various size units (e.g., B, Kb, Kib, Mb, Mib, Gb, Gib, ... PB).
+- Pre-defined constants for various size units (e.g., B, KB, KiB, MB, MiB, GB, GiB, ... PiB).
 - `ByteScale` type which presents size units convertible to different size units.
 - Arithmetic operations for `ByteScale`.
 - FromStr impl for `ByteScale`, allowing to parse from string size representations like 1.5KiB and 521TiB.
