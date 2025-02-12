@@ -271,7 +271,7 @@ pub fn humanbyte_display(input: TokenStream) -> TokenStream {
     let expanded = quote! {
         impl core::fmt::Display for #name {
             fn fmt(&self, f: &mut core::fmt::Formatter) -> core::fmt::Result {
-                f.pad(&humanbyte::to_string(self.0, true))
+                f.pad(&humanbyte::to_string(self.0, humanbyte::Format::IEC))
             }
         }
 
@@ -331,8 +331,8 @@ pub fn humanbyte_parse(input: TokenStream) -> TokenStream {
         impl #name {
             /// Returns the size as a string with an optional SI unit.
             #[inline(always)]
-            pub fn to_string_as(&self, si_unit: bool) -> ::humanbyte::String {
-                ::humanbyte::to_string(self.0, si_unit)
+            pub fn to_string_as(&self, format: humanbyte::Format) -> ::humanbyte::String {
+                ::humanbyte::to_string(self.0, format)
             }
 
             /// Returns the inner u64 value.

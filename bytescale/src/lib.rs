@@ -86,8 +86,8 @@ mod tests {
     #[test]
     fn test_display() {
         assert_display!("215 B", ByteScale::b(215));
-        assert_display!("1.0 kiB", ByteScale::kib(1));
-        assert_display!("301.0 kiB", ByteScale::kib(301));
+        assert_display!("1.0 KiB", ByteScale::kib(1));
+        assert_display!("301.0 KiB", ByteScale::kib(301));
         assert_display!("419.0 MiB", ByteScale::mib(419));
         assert_display!("518.0 GiB", ByteScale::gib(518));
         assert_display!("815.0 TiB", ByteScale::tib(815));
@@ -114,33 +114,33 @@ mod tests {
 
     #[test]
     fn test_to_string_as() {
-        assert_to_string!("215 B", ByteScale::b(215), true);
-        assert_to_string!("215 B", ByteScale::b(215), false);
+        use humanbyte::Format;
+        assert_to_string!("215 B", ByteScale::b(215), Format::IEC);
+        assert_to_string!("215 B", ByteScale::b(215), Format::SI);
 
-        assert_to_string!("1.0 kiB", ByteScale::kib(1), true);
-        assert_to_string!("1.0 KB", ByteScale::kib(1), false);
+        assert_to_string!("1.0 KiB", ByteScale::kib(1), Format::IEC);
+        assert_to_string!("1.0 kB", ByteScale::kib(1), Format::SI);
 
-        assert_to_string!("293.9 kiB", ByteScale::kb(301), true);
-        assert_to_string!("301.0 KB", ByteScale::kb(301), false);
+        assert_to_string!("293.9 KiB", ByteScale::kb(301), Format::IEC);
+        assert_to_string!("301.0 kB", ByteScale::kb(301), Format::SI);
 
-        assert_to_string!("1.0 MiB", ByteScale::mib(1), true);
-        assert_to_string!("1048.6 KB", ByteScale::mib(1), false);
+        assert_to_string!("1.0 MiB", ByteScale::mib(1), Format::IEC);
+        assert_to_string!("1.0 MB", ByteScale::mib(1), Format::SI);
 
-        // a bug case: https://github.com/flang-project/ByteScale/issues/8
-        assert_to_string!("1.9 GiB", ByteScale::mib(1907), true);
-        assert_to_string!("2.0 GB", ByteScale::mib(1908), false);
+        assert_to_string!("1.9 GiB", ByteScale::mib(1907), Format::IEC);
+        assert_to_string!("2.0 GB", ByteScale::mib(1908), Format::SI);
 
-        assert_to_string!("399.6 MiB", ByteScale::mb(419), true);
-        assert_to_string!("419.0 MB", ByteScale::mb(419), false);
+        assert_to_string!("399.6 MiB", ByteScale::mb(419), Format::IEC);
+        assert_to_string!("419.0 MB", ByteScale::mb(419), Format::SI);
 
-        assert_to_string!("482.4 GiB", ByteScale::gb(518), true);
-        assert_to_string!("518.0 GB", ByteScale::gb(518), false);
+        assert_to_string!("482.4 GiB", ByteScale::gb(518), Format::IEC);
+        assert_to_string!("518.0 GB", ByteScale::gb(518), Format::SI);
 
-        assert_to_string!("741.2 TiB", ByteScale::tb(815), true);
-        assert_to_string!("815.0 TB", ByteScale::tb(815), false);
+        assert_to_string!("741.2 TiB", ByteScale::tb(815), Format::IEC);
+        assert_to_string!("815.0 TB", ByteScale::tb(815), Format::SI);
 
-        assert_to_string!("540.9 PiB", ByteScale::pb(609), true);
-        assert_to_string!("609.0 PB", ByteScale::pb(609), false);
+        assert_to_string!("540.9 PiB", ByteScale::pb(609), Format::IEC);
+        assert_to_string!("609.0 PB", ByteScale::pb(609), Format::SI);
     }
 
     #[test]
@@ -166,7 +166,7 @@ mod tests {
 
     #[test]
     fn test_to_string() {
-        assert_to_string!("609.0 PB", ByteScale::pb(609), false);
+        assert_to_string!("609.0 PB", ByteScale::pb(609), Format::SI);
     }
 
     #[cfg(feature = "serde")]

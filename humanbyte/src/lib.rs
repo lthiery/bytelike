@@ -44,21 +44,42 @@ pub const TIB: u64 = 1_099_511_627_776;
 /// bytes size for 1 pebibyte
 pub const PIB: u64 = 1_125_899_906_842_624;
 
-static UNITS: &str = "KMGTPE";
-static UNITS_SI: &str = "kMGTPE";
-static LN_KB: f64 = 6.931471806; // ln 1024
-static LN_KIB: f64 = 6.907755279; // ln 1000
+/// IEC (binary) units.
+///
+/// See <https://en.wikipedia.org/wiki/Kilobyte>.
+const UNITS_IEC: &str = "KMGTPE";
+/// SI (decimal) units.
+///
+/// See <https://en.wikipedia.org/wiki/Kilobyte>.
+const UNITS_SI: &str = "kMGTPE";
+/// `ln(1024) ~= 6.931`
+const LN_KIB: f64 = 6.931_471_805_599_453;
+/// `ln(1000) ~= 6.908`
+const LN_KB: f64 = 6.907_755_278_982_137;
+#[derive(Debug, Clone, Default)]
+pub enum Format {
+    #[default]
+    IEC,
+    SI,
+}
 
-pub fn to_string(bytes: u64, si_prefix: bool) -> String {
-    let unit = if si_prefix { KIB } else { KB };
-    let unit_base = if si_prefix { LN_KIB } else { LN_KB };
-    let unit_prefix = if si_prefix {
-        UNITS_SI.as_bytes()
-    } else {
-        UNITS.as_bytes()
+pub fn to_string(bytes: u64, format: Format) -> String {
+    let unit = match format {
+        Format::IEC => KIB,
+        Format::SI => KB,
     };
-    let unit_suffix = if si_prefix { "iB" } else { "B" };
-
+    let unit_base = match format {
+        Format::IEC => LN_KIB,
+        Format::SI => LN_KB,
+    };
+    let unit_prefix = match format {
+        Format::IEC => UNITS_IEC.as_bytes(),
+        Format::SI => UNITS_SI.as_bytes(),
+    };
+    let unit_suffix = match format {
+        Format::IEC => "iB",
+        Format::SI => "B",
+    };
     if bytes < unit {
         format!("{} B", bytes)
     } else {
@@ -67,7 +88,6 @@ pub fn to_string(bytes: u64, si_prefix: bool) -> String {
             0 => 1,
             e => e,
         };
-
         format!(
             "{:.1} {}{}",
             (size / unit.pow(exp as u32) as f64),
