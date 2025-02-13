@@ -20,6 +20,7 @@ pub use self::ByteScale as _doc_ByteScale;
 #[cfg(test)]
 mod tests {
     use super::*;
+    use humanbyte::{B, MB, KB, Format};
 
     #[test]
     fn test_arithmetic_op() {
@@ -39,8 +40,6 @@ mod tests {
         x *= 2u64;
         assert_eq!(x.as_u64(), 2_200_000);
     }
-
-    #[allow(clippy::unnecessary_cast)]
     #[test]
     fn test_arithmetic_primitives() {
         let mut x = ByteScale::mb(1);
@@ -53,7 +52,7 @@ mod tests {
 
         assert_eq!((x + B as u8).as_u64(), 1_000_001);
 
-        assert_eq!((x - MB as u64).as_u64(), 0);
+        assert_eq!((x - MB).as_u64(), 0);
 
         assert_eq!((x - MB as u32).as_u64(), 0);
 
