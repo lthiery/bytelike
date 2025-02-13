@@ -2,7 +2,7 @@
 #![warn(missing_docs)]
 #![doc = include_str!("../README.md")]
 
-pub use humanbyte::*;
+pub use humanbyte::HumanByte;
 
 #[cfg(feature = "arbitrary")]
 use arbitrary::Arbitrary;

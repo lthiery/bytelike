@@ -11,9 +11,9 @@ license = "Apache-2.0"
 proc-macro = true
 
 [dependencies]
-syn = { version = "2", features = ["full"] }
-quote = "1"
 proc-macro2 = "1"
+quote = "1"
+syn = { version = "2", features = ["full"] }
 
 [features]
 default = []

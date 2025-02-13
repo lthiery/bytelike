@@ -28,16 +28,16 @@ pub fn humanbyte_constructor(input: TokenStream) -> TokenStream {
     // Define units with their multipliers and descriptions
     let units = vec![
         ("b", "1", "bytes"),
-        ("kb", "humanbyte::KB", "kilobytes"),
-        ("kib", "humanbyte::KIB", "kibibytes"),
-        ("mb", "humanbyte::MB", "megabytes"),
-        ("mib", "humanbyte::MIB", "mebibytes"),
-        ("gb", "humanbyte::GB", "gigabytes"),
-        ("gib", "humanbyte::GIB", "gibibytes"),
-        ("tb", "humanbyte::TB", "terabytes"),
-        ("tib", "humanbyte::TIB", "tebibytes"),
-        ("pb", "humanbyte::PB", "petabytes"),
-        ("pib", "humanbyte::PIB", "pebibytes"),
+        ("kb", "::humanbyte::KB", "kilobytes"),
+        ("kib", "::humanbyte::KIB", "kibibytes"),
+        ("mb", "::humanbyte::MB", "megabytes"),
+        ("mib", "::humanbyte::MIB", "mebibytes"),
+        ("gb", "::humanbyte::GB", "gigabytes"),
+        ("gib", "::humanbyte::GIB", "gibibytes"),
+        ("tb", "::humanbyte::TB", "terabytes"),
+        ("tib", "::humanbyte::TIB", "tebibytes"),
+        ("pb", "::humanbyte::PB", "petabytes"),
+        ("pib", "::humanbyte::PIB", "pebibytes"),
     ];
 
     // Generate methods
@@ -271,7 +271,7 @@ pub fn humanbyte_display(input: TokenStream) -> TokenStream {
     let expanded = quote! {
         impl core::fmt::Display for #name {
             fn fmt(&self, f: &mut core::fmt::Formatter) -> core::fmt::Result {
-                f.pad(&humanbyte::to_string(self.0, humanbyte::Format::IEC))
+                f.pad(&::humanbyte::to_string(self.0, ::humanbyte::Format::IEC))
             }
         }
 
@@ -301,7 +301,7 @@ pub fn humanbyte_fromstr(input: TokenStream) -> TokenStream {
                 let number = ::humanbyte::take_while(value, |c| c.is_ascii_digit() || c == '.');
                 match number.parse::<f64>() {
                     Ok(v) => {
-                        let suffix = skip_while(&value[number.len()..], char::is_whitespace);
+                        let suffix = ::humanbyte::skip_while(&value[number.len()..], char::is_whitespace);
                         match suffix.parse::<::humanbyte::Unit>() {
                             Ok(u) => Ok(Self((v * u64::from(u) as f64) as u64)),
                             Err(error) => Err(::humanbyte::format!(
@@ -331,7 +331,7 @@ pub fn humanbyte_parse(input: TokenStream) -> TokenStream {
         impl #name {
             /// Returns the size as a string with an optional SI unit.
             #[inline(always)]
-            pub fn to_string_as(&self, format: humanbyte::Format) -> ::humanbyte::String {
+            pub fn to_string_as(&self, format: ::humanbyte::Format) -> ::humanbyte::String {
                 ::humanbyte::to_string(self.0, format)
             }
 
