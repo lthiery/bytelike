@@ -3,7 +3,8 @@
 [![CI](https://github.com/lthiery/humanbyte/actions/workflows/rust.yaml/badge.svg)](https://github.com/lthiery/humanbyte/actions/workflows/rust.yaml)
 [![Crates.io Version](https://img.shields.io/crates/v/bytescale.svg)](https://crates.io/crates/bytescale)
 
-`ByteScale` is a utility for human-readable byte count representations.
+`ByteScale` is a utility for human-readable byte count representations. It is derived using the [`HumanByte`][HumanByte]
+procedural macro and serves as an example for HumanByte.
 
 Features:
 
@@ -102,3 +103,5 @@ fn byte_arithmetic_operator() {
     print!("{}", minus);
 }
 ```
+
+[HumanByte]:https://crates.io/crates/humanbyte

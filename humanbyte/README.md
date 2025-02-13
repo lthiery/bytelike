@@ -3,7 +3,8 @@
 
 # HumanByte
 
-HumanByte is a procedural macro crate for deriving `HumanByte` functions for new types of the form `Foo(u64)`.
+HumanByte is a procedural macro crate for deriving `HumanByte` functions for new types of the form `NewType(u64)`. It is
+inspired by the [`bytesize`][bytesize] crate (which is replicated here by our example [`bytescale`] crate).
 
 It provides human-friendly way of constructing and displaying the type with byte units.
 
@@ -59,4 +60,4 @@ a la carte fashion:
 * HumanByteSerde (requires the `serde` feature)
 
 [bytescale]: https://docs.rs/bytescale/latest/bytescale
-
+[bytesize]: https://docs.rs/bytesize/latest/bytesize
